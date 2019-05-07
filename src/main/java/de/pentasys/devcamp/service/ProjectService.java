@@ -20,10 +20,6 @@ public class ProjectService {
         this.bookingRepository = bookingRepository;
     }
 
-    public Project findOne(String name) {
-        return projectRepository.findByName(name);
-    }
-
     public Project findOne(Long id) {
         return projectRepository.findById(id).get();
     }
