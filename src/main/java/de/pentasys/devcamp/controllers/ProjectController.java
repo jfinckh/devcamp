@@ -96,11 +96,10 @@ public class ProjectController {
 
     @GetMapping("/{id}/bookings")
     public CollectionModel getBookings(@PathVariable Long id) {
-        Link backToProjectLink = linkTo(methodOn(controllerClass).getProject(id))
-                .withRel("backToProject").withType(RequestMethod.GET.toString());
-
+        Link selfLink = linkTo(methodOn(controllerClass).getProject(id))
+                .withSelfRel().withType(RequestMethod.GET.toString());
         CollectionModel response = new CollectionModel<>(projectService.getBookings(id));
-        response.add(backToProjectLink);
+        response.add(selfLink);
         return response;
     }
 

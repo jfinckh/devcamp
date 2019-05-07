@@ -64,19 +64,19 @@
     </build>
 
     <repositories>
-        <projectRepository>
+        <repository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
             <url>https://repo.spring.io/snapshot</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </projectRepository>
-        <projectRepository>
+        </repository>
+        <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/milestone</url>
-        </projectRepository>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
