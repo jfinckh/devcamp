@@ -25,12 +25,12 @@ public class DevcampApplication {
         return args -> {
 
             Project project1 = Project.builder()
-                    .name("DAIMLER Cockpit")
+                    .name("DevCamp 2019")
                     .manHour(500L)
                     .bookings(new ArrayList<>())
                     .build();
             Project project2 = Project.builder()
-                    .name("Porsche Hybrid Drive")
+                    .name("SpringBoot Hypermedia")
                     .manHour(150L)
                     .bookings(new ArrayList<>())
                     .build();

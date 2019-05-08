@@ -1,6 +1,7 @@
-#RESTful API with Hypermedia
+##RESTful API with Hypermedia
 
-This is an example application 
+This is an example application which assembles a time tracking app.
+
 
 ## Technology stack:
 

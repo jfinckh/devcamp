@@ -6,6 +6,8 @@ import de.pentasys.devcamp.service.ProjectService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
-@RequestMapping("/projects")
+@RequestMapping("api/projects")
 public class ProjectController {
 
     final ProjectService projectService;
@@ -24,24 +26,6 @@ public class ProjectController {
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
         this.controllerClass = ProjectController.class;
-    }
-
-    @GetMapping("/{id}")
-    public EntityModel<Project> getProject(@PathVariable Long id) {
-        Link selfLink = linkTo(methodOn(controllerClass).getProject(id))
-                .withSelfRel().withType(RequestMethod.GET.toString());
-        Link getProjectsLink = linkTo(methodOn(controllerClass).getProjects())
-                .withRel("getProjects").withType(RequestMethod.GET.toString());
-        Link updateLink = linkTo(methodOn(controllerClass).putProject(null, id))
-                .withRel("updateProject").withType(RequestMethod.PUT.toString());
-        Link createBookingLink = linkTo(methodOn(controllerClass).postBooking(null, id))
-                .withRel("postBooking").withType(RequestMethod.POST.toString());
-        Link getBookingsLink = linkTo(methodOn(controllerClass).getBookings(id))
-                .withRel("getBookings").withType(RequestMethod.GET.toString());
-
-        EntityModel response = new EntityModel<>(projectService.findOne(id));
-        response.add(selfLink, getProjectsLink, updateLink, getBookingsLink, createBookingLink);
-        return response;
     }
 
     @GetMapping
@@ -60,6 +44,40 @@ public class ProjectController {
         return response;
     }
 
+    @GetMapping("/{id}")
+    public EntityModel<Project> getProject(@PathVariable Long id) {
+        Link selfLink = linkTo(methodOn(controllerClass).getProject(id))
+                .withSelfRel().withType(RequestMethod.GET.toString());
+        Link getProjectsLink = linkTo(methodOn(controllerClass).getProjects())
+                .withRel("getProjects").withType(RequestMethod.GET.toString());
+        Link putProjectLink = linkTo(methodOn(controllerClass).putProject(null, id))
+                .withRel("putProject").withType(RequestMethod.PUT.toString());
+
+        Link getBookingsLink = linkTo(methodOn(controllerClass).getBookings(id))
+                .withRel("getBookings").withType(RequestMethod.GET.toString());
+
+        EntityModel response = new EntityModel<>(projectService.findOne(id));
+        response.add(selfLink, getProjectsLink, putProjectLink, getBookingsLink);
+        return response;
+    }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<?> getProject(@PathVariable Long id) {
+//        Link selfLink = linkTo(methodOn(controllerClass).getProject(id))
+//                .withSelfRel().withType(RequestMethod.GET.toString());
+//        EntityModel entityModel;
+//        if(projectService.existById(id)) {
+//            entityModel = new EntityModel<>(projectService.findOne(id));
+//            entityModel.add(selfLink);
+//            return new ResponseEntity<>(entityModel, HttpStatus.OK);
+//        }
+//        entityModel = new EntityModel<>("ERROR Entity not found");
+//        Link getProjectsLink = linkTo(methodOn(controllerClass).getProjects())
+//                .withRel("getProjects").withType(RequestMethod.GET.toString());
+//        entityModel.add(getProjectsLink);
+//        return new ResponseEntity<>(entityModel, HttpStatus.NOT_FOUND);
+//    }
+
     @PostMapping
     public EntityModel<Project> postProject(@RequestBody Project project) {
         Project postedEntity = projectService.createProject(project);
@@ -74,12 +92,21 @@ public class ProjectController {
 
     @PutMapping("/{id}")
     public EntityModel<Project> putProject(@RequestBody Project project, @PathVariable Long id) {
-        Link getProjects = linkTo(methodOn(controllerClass).getProjects())
+        Link getProjectsLink = linkTo(methodOn(controllerClass).getProjects())
                 .withRel("getProjects").withType(RequestMethod.GET.toString());
         Link selfLink = linkTo(methodOn(controllerClass).getProject(id))
                 .withSelfRel().withType(RequestMethod.GET.toString());
         EntityModel response = new EntityModel<>(projectService.updateOne(project, id));
-        response.add(selfLink, getProjects);
+        response.add(selfLink, getProjectsLink);
+        return response;
+    }
+
+    @DeleteMapping("/{id}")
+    public EntityModel deleteProject(@PathVariable Long id) {
+        Link getProjectsLink = linkTo(methodOn(controllerClass).getProjects())
+                .withRel("getProjects").withType(RequestMethod.GET.toString());
+        EntityModel response = new EntityModel<>(projectService.deleteBooking(id));
+        response.add(getProjectsLink);
         return response;
     }
 
@@ -98,9 +125,10 @@ public class ProjectController {
     public CollectionModel getBookings(@PathVariable Long id) {
         Link backToProjectLink = linkTo(methodOn(controllerClass).getProject(id))
                 .withRel("backToProject").withType(RequestMethod.GET.toString());
-
+        Link createBookingLink = linkTo(methodOn(controllerClass).postBooking(null, id))
+                .withRel("postBooking").withType(RequestMethod.POST.toString());
         CollectionModel response = new CollectionModel<>(projectService.getBookings(id));
-        response.add(backToProjectLink);
+        response.add(backToProjectLink, createBookingLink);
         return response;
     }
 

@@ -57,4 +57,17 @@ public class ProjectService {
     public Iterable<Booking> getBookings(Long id) {
         return bookingRepository.findAllByProjectId(id);
     }
+
+    public String deleteBooking(Long id) {
+        if (projectRepository.existsById(id)) {
+            projectRepository.deleteById(id);
+            return "Successfully deleted Project with id "+ id;
+        } else {
+            return "No project found with id " + id;
+        }
+    }
+
+    public boolean existById(Long id) {
+        return projectRepository.existsById(id);
+    }
 }

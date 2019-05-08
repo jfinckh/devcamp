@@ -1,5 +1,6 @@
 package de.pentasys.devcamp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,12 +21,15 @@ public class Project {
     private Long manHour;
     private Long totalHoursBooked;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
 
 
     public Long getTotalHoursBooked() {
-        Long totalMinutes = bookings.stream().mapToLong(Booking::getDurationInMinutes).sum();
+        long totalMinutes = bookings.stream()
+                .mapToLong(Booking::getDurationInMinutes)
+                .sum();
         return totalMinutes/60;
     }
 
